@@ -27,12 +27,13 @@
       *---------------------------------------------------------------*
       *  Constants                                                    *
       *---------------------------------------------------------------*
-       77  W00-QMGR               PIC X(48) VALUE
-           'CSQ1'.
-       77  W00-REQUEST-QNAME      PIC X(48) VALUE
-           'JVMQUERY.POJO.REQUEST.QUEUE'.
-       77  W00-REPLY-QNAME        PIC X(48) VALUE
-           'JVMQUERY.POJO.REPLY.QUEUE'.
+       77  W00-QMGR PIC X(48) VALUE 'CSQ1'.
+
+       77  W00-REQUEST-QNAME PIC X(48) VALUE 'JVMQUERY.POJO.REQUEST.QUEU
+      -    'E'.
+
+       77  W00-REPLY-QNAME PIC X(48) VALUE 'JVMQUERY.POJO.REPLY.QUEUE'.
+
        77  W00-WAIT-INTERVAL      PIC S9(9) BINARY VALUE 3000.
 
       *---------------------------------------------------------------*
@@ -90,10 +91,10 @@
       *  Request parameters expected by target web service            *
       *---------------------------------------------------------------*
        01 COM-REQUEST.
-           05 JvmQueryRequest.
-               10 envVarNames--C PIC 9(9) BINARY.
-               10 envVarNames PIC X(32) OCCURS 0 TO 10 DEPENDING ON
-                   envVarNames--C.
+           05  JvmQueryRequest.
+             10  envVarNames--C PIC 9(9) BINARY.
+             10  envVarNames OCCURS 0 TO 10 DEPENDING ON envVarNames--C 
+                PIC X(32) DISPLAY.
 
        
       *---------------------------------------------------------------*
@@ -116,14 +117,14 @@
       *  Reply parameters as returned by target web service           *
       *---------------------------------------------------------------*
        01 COM-REPLY.
-           05 JvmQueryReply.
-               10 envVarValues--C PIC 9(9) BINARY.
-               10 country PIC X(32).
-               10 currencySymbol PIC X(32).
-               10 envVarValues PIC X(32) OCCURS 0 TO 10 DEPENDING ON
-                   envVarValues--C.
-               10 formattedDate PIC X(32).
-               10 language PIC X(32).
+           05  JvmQueryReply.
+             10  envVarValues--C PIC 9(9) BINARY.
+             10  country PIC X(32) DISPLAY.
+             10  currencySymbol PIC X(32) DISPLAY.
+             10  envVarValues OCCURS 0 TO 10 DEPENDING ON 
+                 envVarValues--C PIC X(32) DISPLAY.
+             10  formattedDate PIC X(32) DISPLAY.
+             10  language PIC X(32) DISPLAY.
 
                
       *****************************************************************

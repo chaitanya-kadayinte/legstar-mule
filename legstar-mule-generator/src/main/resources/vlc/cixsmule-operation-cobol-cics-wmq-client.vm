@@ -27,15 +27,11 @@
       *---------------------------------------------------------------*
       *  Constants                                                    *
       *---------------------------------------------------------------*
-       77  W00-QMGR               PIC X(48) VALUE
-${structHelper.getCobolValueCode("'${wmqZosQueueManager}'", 1)}
-       77  W00-REQUEST-QNAME      PIC X(48) VALUE
-${structHelper.getCobolValueCode("'${wmqRequestQueue}'", 1)}
-       77  W00-REPLY-QNAME        PIC X(48) VALUE
-${structHelper.getCobolValueCode("'${wmqReplyQueue}'", 1)}
+${structHelper.getAlphanumDataItemCode(77, "W00-QMGR", 48, "${wmqZosQueueManager}")}
+${structHelper.getAlphanumDataItemCode(77, "W00-REQUEST-QNAME", 48, "${wmqRequestQueue}")}
+${structHelper.getAlphanumDataItemCode(77, "W00-REPLY-QNAME", 48, "${wmqReplyQueue}")}
 #if(${wmqErrorQueue})
-       77  W00-ERROR-QNAME        PIC X(48) VALUE
-${structHelper.getCobolValueCode("'${wmqErrorQueue}'", 1)}
+${structHelper.getAlphanumDataItemCode(77, "W00-ERROR-QNAME", 48, "${wmqErrorQueue}")}
 #end
        77  W00-WAIT-INTERVAL      PIC S9(9) BINARY VALUE 3000.
 
