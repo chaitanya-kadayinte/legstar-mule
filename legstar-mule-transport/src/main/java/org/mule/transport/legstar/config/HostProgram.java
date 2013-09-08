@@ -17,8 +17,8 @@ import com.legstar.config.Constants;
  * than inContainer. The outputContainers field is more meaningful than
  * outContainer.
  * <p/>
- * TODO duplicate of com.legstar.host.invoke.model.HostProgram needs to go away
- * when http://code.google.com/p/legstar/issues/detail?id=132 is fixed
+ * Mule does unwanted controls on attributes named "name" (theuy need to be
+ * unique within a config) so we introduce programName as an alternative.
  * 
  */
 public class HostProgram {
@@ -147,6 +147,20 @@ public class HostProgram {
      * @param name host program name.
      */
     public void setName(final String name) {
+        _name = name;
+    }
+
+    /**
+     * @return Returns the host program name.
+     */
+    public String getProgramName() {
+        return _name;
+    }
+
+    /**
+     * @param name host program name.
+     */
+    public void setProgramName(final String name) {
         _name = name;
     }
 

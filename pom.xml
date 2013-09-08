@@ -22,7 +22,7 @@
 
         <!-- If a mainframe is available for integration testing, set
         this property to false in settings.xml, it will take precedence. -->
-        <no-mainframe-available>true</no-mainframe-available>
+        <no-mainframe-available>false</no-mainframe-available>
     </properties>
     <url>http://www.mulesource.org/display/LEGSTAR/Home</url>
 
@@ -41,14 +41,14 @@
 
         <downloadUrl>http://www.legsem.com/legstar/maven/repo/</downloadUrl>
         <repository>
-            <id>ftp-release-repository</id>
+            <id>git-release-repository</id>
             <name>LEGSTAR Distributions Repository</name>
-            <url>ftp://ftp.legsem.com/public_html/legstar/maven/repo</url>
+            <url>https://github.com/legsem/legstar/raw/master/maven/releases</url>
         </repository>
         <snapshotRepository>
-            <id>ftp-snapshots-repository</id>
+            <id>git-snapshots-repository</id>
             <name>LEGSTAR Distributions Snapshot Repository</name>
-            <url>ftp://ftp.legsem.com/public_html/legstar/maven/snapshots</url>
+            <url>https://github.com/legsem/legstar/raw/master/maven/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <site>
@@ -237,7 +237,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>${pom.artifactId}-${pom.version}</finalName>
+                    <finalName>${project.artifactId}-${project.version}</finalName>
                     <descriptors>
                         <descriptor>assembly.xml</descriptor>
                     </descriptors>
@@ -352,28 +352,28 @@
             <dependency>
                 <groupId>org.mule.transports</groupId>
                 <artifactId>legstar-mule-transport</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
 
             <!-- LegStar for Mule generator -->    
             <dependency>
                 <groupId>org.mule.transports</groupId>
                 <artifactId>legstar-mule-generator</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
 
             <!-- LegStar for Mule adapter sample -->    
             <dependency>
                 <groupId>org.mule.transports</groupId>
                 <artifactId>legstar-mulegen-lsfileae</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
 
             <!-- LegStar for Mule proxy sample -->    
             <dependency>
                 <groupId>org.mule.transports</groupId>
                 <artifactId>legstar-mulegen-jvmquery</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
             </dependency>
 
             <!-- Mule intra-vm transport -->
