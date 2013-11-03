@@ -19,9 +19,12 @@
  */
 package org.mule.transport.legstar.tcp.config;
 
-import org.mule.tck.FunctionalTestCase;
-import org.mule.transport.legstar.tcp.LegstarTcpConnector;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.mule.tck.junit4.FunctionalTestCase;
+import org.mule.transport.legstar.tcp.LegstarTcpConnector;
 /**
  * Test for LegstarTcpNamespaceHandlerTestCase.
  */
@@ -36,6 +39,7 @@ public class LegstarTcpNamespaceHandlerTestCase extends FunctionalTestCase {
      * Creates a connector from a spring configuration.
      * @throws Exception if creation fails
      */
+    @Test
     public void testLegstarTcpConfig() throws Exception {
         LegstarTcpConnector c = (LegstarTcpConnector) muleContext.getRegistry().lookupConnector("legstarTcpConnector");
         assertNotNull(c);

@@ -40,14 +40,15 @@ import org.mule.transport.tcp.TcpConnector;
  * reused with the restriction that each socket is associated with a set of
  * mainframe credentials in addition to the endpoint.
  */
-public class LegstarTcpConnector extends TcpConnector implements LegstarConnector {
+public class LegstarTcpConnector extends TcpConnector implements
+        LegstarConnector {
 
     /** This constant defines the main transport protocol identifier. */
     public static final String LEGSTARTCP = "legstar-tcp";
-    
+
     /** Host user ID. */
     private String _hostUserID = "";
-    
+
     /** Host password. */
     private String _hostPassword = "";
 
@@ -55,8 +56,9 @@ public class LegstarTcpConnector extends TcpConnector implements LegstarConnecto
     private GenericKeyedObjectPool _socketsPool = new GenericKeyedObjectPool();
 
     /**
-     * Overriding the TCP connector in order to substitute the socket
-     * factory with our own. We also have our own protocol.
+     * Overriding the TCP connector in order to substitute the socket factory
+     * with our own. We also have our own protocol.
+     * 
      * @param context the Mule context.
      */
     public LegstarTcpConnector(MuleContext context) {
@@ -65,16 +67,17 @@ public class LegstarTcpConnector extends TcpConnector implements LegstarConnecto
         setTcpProtocol(new LegstarTcpProtocol());
     }
 
-
     /** {@inheritDoc} */
     public void doInitialise() throws InitialisationException {
         _socketsPool.setFactory(getSocketFactory());
         _socketsPool.setTestOnBorrow(true);
-        // Testing is expensive in our case because we send a probe to the mainframe
+        // Testing is expensive in our case because we send a probe to the
+        // mainframe
         _socketsPool.setTestOnReturn(false);
-        //There should only be one pooled instance per socket (key)
+        // There should only be one pooled instance per socket (key)
         _socketsPool.setMaxActive(1);
-        _socketsPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK);
+        _socketsPool
+                .setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK);
     }
 
     /** {@inheritDoc} */
@@ -88,7 +91,8 @@ public class LegstarTcpConnector extends TcpConnector implements LegstarConnecto
         try {
             _socketsPool.close();
         } catch (Exception e) {
-            logger.warn("Failed to close dispatcher socket pool: " + e.getMessage());
+            logger.warn("Failed to close dispatcher socket pool: "
+                    + e.getMessage());
         }
     }
 
@@ -109,47 +113,52 @@ public class LegstarTcpConnector extends TcpConnector implements LegstarConnecto
      * Lookup a socket in the list of dispatcher sockets but don't create a new
      * socket.
      * <p/>
-     * This code is almost identical to TcpConnector#getSocket but there are no other way
-     * we can substitute our own socket key.
+     * This code is almost identical to TcpConnector#getSocket but there are no
+     * other way we can substitute our own socket key.
+     * 
      * @param event the mule event that triggered the need for a socket
+     * @param endpoint the mule endpoint
      * @return a socket
      * @throws Exception if socket cannot be retrieved
      */
-    protected Socket getSocket(final MuleEvent event) throws Exception {
-        ImmutableEndpoint endpoint = event.getEndpoint();
+    protected Socket getSocket(final MuleEvent event,
+            final ImmutableEndpoint endpoint) throws Exception {
         HostCredentials hostCredentials = getHostCredentials(event.getMessage());
-        LegstarTcpSocketKey socketKey = new LegstarTcpSocketKey(endpoint, hostCredentials);
+        LegstarTcpSocketKey socketKey = new LegstarTcpSocketKey(endpoint,
+                hostCredentials);
         if (logger.isDebugEnabled()) {
-            logger.debug("borrowing socket for " + socketKey + "/" + socketKey.hashCode());
+            logger.debug("borrowing socket for " + socketKey + "/"
+                    + socketKey.hashCode());
         }
         Socket socket = (Socket) _socketsPool.borrowObject(socketKey);
         if (logger.isDebugEnabled()) {
             logger.debug("borrowed socket, "
-                    + (socket.isClosed() ? "closed" : "open") 
-                    + "; debt " + _socketsPool.getNumActive());
+                    + (socket.isClosed() ? "closed" : "open") + "; debt "
+                    + _socketsPool.getNumActive());
         }
         return socket;
     }
 
     /**
      * Return the socket to the pool.
+     * 
      * @param socket socket to return
      * @param event triggering event
      * @throws Exception if unable to return
      */
-    protected void releaseSocket(
-            final Socket socket,
-            final MuleEvent event) throws Exception {
-        ImmutableEndpoint endpoint = event.getEndpoint();
+    protected void releaseSocket(final Socket socket, final MuleEvent event,
+            final ImmutableEndpoint endpoint) throws Exception {
         HostCredentials hostCredentials = getHostCredentials(event.getMessage());
-        LegstarTcpSocketKey socketKey = new LegstarTcpSocketKey(endpoint, hostCredentials);
+        LegstarTcpSocketKey socketKey = new LegstarTcpSocketKey(endpoint,
+                hostCredentials);
         _socketsPool.returnObject(socketKey, socket);
         if (logger.isDebugEnabled()) {
-            logger.debug("returning socket for " + socketKey + "/" + socketKey.hashCode());
+            logger.debug("returning socket for " + socketKey + "/"
+                    + socketKey.hashCode());
             logger.debug("returned socket; debt " + _socketsPool.getNumActive());
         }
     }
-    
+
     /** {@inheritDoc} */
     public HostCredentials getHostCredentials(final MuleMessage message) {
         return LegstarConnectorHelper.getHostCredentials(this, message);

@@ -10,23 +10,26 @@
  ******************************************************************************/
 package org.mule.transport.legstar.http;
 
-import org.mule.endpoint.MuleEndpointURI;
-import org.mule.tck.AbstractMuleTestCase;
-import org.mule.api.endpoint.EndpointURI;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+import org.mule.api.endpoint.EndpointURI;
+import org.mule.endpoint.MuleEndpointURI;
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 
 /**
  * Test LegStar Endpoints.
  * For general guidelines on writing transports see http://mule.mulesource.org/display/MULE/Writing+Transports
  *
  */
-public class LegstarHttpEndpointTestCase extends AbstractMuleTestCase {
+public class LegstarHttpEndpointTestCase extends AbstractMuleContextTestCase {
 
  
     /**
      * Check that LegStar endpoints are valid Mule endpoints.
      * @throws Exception if test fails
      */
+    @Test
     public void testValidEndpointURI() throws Exception  {
         EndpointURI endpointUri = new MuleEndpointURI("legstar://localhost:7856", muleContext);
         endpointUri.initialise();
@@ -41,6 +44,7 @@ public class LegstarHttpEndpointTestCase extends AbstractMuleTestCase {
      * Check that LegStar endpoints are valid Mule endpoints.
      * @throws Exception if test fails
      */
+    @Test
     public void testOldstyleEndpointURI() throws Exception  {
         EndpointURI endpointUri = new MuleEndpointURI("legstar:http://localhost:7856", muleContext);
         endpointUri.initialise();

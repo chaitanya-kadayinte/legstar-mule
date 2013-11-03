@@ -20,9 +20,9 @@
 
 package org.mule.transport.legstar.tcp;
 
+import org.mule.api.construct.FlowConstruct;
 import org.mule.api.endpoint.EndpointBuilder;
 import org.mule.api.endpoint.InboundEndpoint;
-import org.mule.api.service.Service;
 import org.mule.api.transport.MessageReceiver;
 import org.mule.endpoint.EndpointURIEndpointBuilder;
 import org.mule.endpoint.URIBuilder;
@@ -39,10 +39,11 @@ public class LegstarTcpMessageReceiverTestCase extends AbstractMessageReceiverTe
 
     /** {@inheritDoc} */
     public MessageReceiver getMessageReceiver() throws Exception {
-        Mock mockService = new Mock(Service.class);
+        Mock mockService = new Mock(FlowConstruct.class);
         mockService.expectAndReturn("getResponseTransformer", null);
         mockService.expectAndReturn("getResponseRouter", null);
-        return new LegstarTcpMessageReceiver(endpoint.getConnector(), (Service) mockService.proxy(), endpoint);
+        return new LegstarTcpMessageReceiver(endpoint.getConnector(),
+                (FlowConstruct) mockService.proxy(), endpoint);
     }
 
     /** {@inheritDoc} */

@@ -16,13 +16,12 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import org.apache.commons.httpclient.HttpVersion;
-import org.mule.RequestContext;
-import org.mule.transformer.AbstractMessageTransformer;
-import org.mule.transformer.AbstractTransformerTestCase;
-import org.mule.transport.http.HttpResponse;
 import org.mule.api.MuleEvent;
 import org.mule.api.transformer.Transformer;
 import org.mule.api.transport.OutputHandler;
+import org.mule.transformer.AbstractMessageTransformer;
+import org.mule.transformer.AbstractTransformerTestCase;
+import org.mule.transport.http.HttpResponse;
 
 import com.legstar.coxb.host.HostData;
 import com.legstar.test.coxb.LsfileaeCases;
@@ -32,6 +31,8 @@ import com.legstar.test.coxb.LsfileaeCases;
  *
  */
 public class SinglepartHostByteArrayToHttpResponseTest extends AbstractTransformerTestCase {
+
+    private MuleEvent muleEvent;
 
     /** {@inheritDoc} */
     public AbstractMessageTransformer getTransformer() throws Exception {
@@ -56,6 +57,7 @@ public class SinglepartHostByteArrayToHttpResponseTest extends AbstractTransform
             public void write(
                     final MuleEvent event,
                     final OutputStream out) throws IOException {
+                muleEvent = event;
                 out.write(HostData.toByteArray(
                         LsfileaeCases.getHostBytesHex()));
             }
@@ -80,11 +82,11 @@ public class SinglepartHostByteArrayToHttpResponseTest extends AbstractTransform
                     return false;
                 }
                 ByteArrayOutputStream outExpected = new ByteArrayOutputStream();
-                httpExpected.getBody().write(RequestContext.getEvent(), outExpected);
+                httpExpected.getBody().write(muleEvent, outExpected);
                 byte[] bodyExpected = outExpected.toByteArray();
 
                 ByteArrayOutputStream outResult = new ByteArrayOutputStream();
-                httpResult.getBody().write(RequestContext.getEvent(), outResult);
+                httpResult.getBody().write(muleEvent, outResult);
                 byte[] bodyResult = outResult.toByteArray();
 
                 if (!Arrays.equals(bodyExpected, bodyResult)) {

@@ -10,20 +10,21 @@
  ******************************************************************************/
 package org.mule.transport.legstar.wmq;
 
-import java.io.ObjectInputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
-import org.mule.tck.functional.FunctionalTestComponent;
-import org.mule.transport.http.ReleasingInputStream;
+import org.mule.tck.junit4.AbstractMuleTestCase;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 import com.legstar.test.coxb.LsfileaeCases;
 import com.legstar.test.coxb.lsfileae.Dfhcommarea;
 import com.legstar.test.coxb.lsfileae.ObjectFactory;
-
 /**
  * Test a roundtrip on the legstar WMQ transport with mqcih messaging.
  *
@@ -35,7 +36,9 @@ public class LegstarWmqMqcihFunctionalTestCase extends FunctionalTestCase {
      */
     public LegstarWmqMqcihFunctionalTestCase() {
         super();
-        System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, "600");
+        System.setProperty(AbstractMuleTestCase.TEST_TIMEOUT_SYSTEM_PROPERTY,
+                "600");
+        System.setProperty("mule.verbose.exceptions", "true");
     }
     
     /** {@inheritDoc}*/
@@ -47,10 +50,8 @@ public class LegstarWmqMqcihFunctionalTestCase extends FunctionalTestCase {
      * Perform round trip.
      * @throws Exception if test fails
      */
+    @Test
     public void testSend() throws Exception {        
-        FunctionalTestComponent service =
-            (FunctionalTestComponent) getComponent("lsfileaeAdapterService");
-        assertNotNull(service);
 
         Map < String, Object > properties = new HashMap < String, Object >();
         properties.put(LegstarWmqConnector.HOST_USERID_PROPERTY, "P390");
@@ -59,12 +60,9 @@ public class LegstarWmqMqcihFunctionalTestCase extends FunctionalTestCase {
         MuleMessage result = client.send("lsfileaeClientEndpoint",
                 getJavaRequest(), properties);
 
-        /* The HTTP transport sends back a java serialized object */
         assertTrue(null == result.getExceptionPayload());
-        assertTrue(result.getPayload() instanceof ReleasingInputStream);
-        ObjectInputStream in = new ObjectInputStream(
-                (ReleasingInputStream) result.getPayload());
-        Dfhcommarea reply = (Dfhcommarea) in.readObject();
+        assertTrue(result.getPayload() instanceof Dfhcommarea);
+        Dfhcommarea reply = (Dfhcommarea) result.getPayload();
         LsfileaeCases.checkJavaObjectReply100(reply);
     }
 

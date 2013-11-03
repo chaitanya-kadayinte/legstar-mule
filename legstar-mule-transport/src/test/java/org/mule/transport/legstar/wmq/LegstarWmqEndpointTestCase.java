@@ -20,20 +20,23 @@
 
 package org.mule.transport.legstar.wmq;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.endpoint.MuleEndpointURI;
-import org.mule.tck.AbstractMuleTestCase;
-
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 /**
  * Test legstar WMQ endpoints.
  *
  */
-public class LegstarWmqEndpointTestCase extends AbstractMuleTestCase {
+public class LegstarWmqEndpointTestCase extends AbstractMuleContextTestCase {
 
     /**
      * Create an endpoint and check its properties.
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testValidEndpointURI() throws Exception {
         EndpointURI endpointUri = new MuleEndpointURI("legstar-wmq://CICS01.BRIDGE.REQUEST.QUEUE", muleContext);
         endpointUri.initialise();
@@ -46,6 +49,7 @@ public class LegstarWmqEndpointTestCase extends AbstractMuleTestCase {
      * Get user/password from URI.
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testUserPasswordURI() throws Exception {
         EndpointURI endpointUri = new MuleEndpointURI("legstar-wmq://user:password@CICS01.BRIDGE.REQUEST.QUEUE", muleContext);
         endpointUri.initialise();

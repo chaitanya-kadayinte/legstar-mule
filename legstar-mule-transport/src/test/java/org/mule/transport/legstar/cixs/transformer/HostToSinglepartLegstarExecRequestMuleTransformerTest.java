@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.mule.transport.legstar.cixs.transformer;
 
+import static org.junit.Assert.assertTrue;
+
 import org.mule.api.transformer.Transformer;
 import org.mule.transformer.AbstractMessageTransformer;
 import org.mule.transformer.AbstractTransformerTestCase;
@@ -21,7 +23,6 @@ import com.legstar.messaging.HostMessageFormatException;
 import com.legstar.messaging.LegStarMessage;
 import com.legstar.messaging.LegStarMessagePart;
 import com.legstar.test.coxb.LsfileaeCases;
-
 /**
  * Test HostToLegstarMuleTransformer class.
  *

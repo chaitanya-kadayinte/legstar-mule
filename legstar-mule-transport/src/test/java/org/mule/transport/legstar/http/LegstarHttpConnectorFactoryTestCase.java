@@ -10,18 +10,23 @@
  ******************************************************************************/
 package org.mule.transport.legstar.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.transport.Connector;
-import org.mule.transport.service.TransportFactory;
-import org.mule.tck.AbstractMuleTestCase;
 import org.mule.endpoint.MuleEndpointURI;
-
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
+import org.mule.transport.service.TransportFactory;
 
 /**
  * Test the LegstarHttpConnectorFactory class.
  *
  */
-public class LegstarHttpConnectorFactoryTestCase extends AbstractMuleTestCase {
+public class LegstarHttpConnectorFactoryTestCase extends
+        AbstractMuleContextTestCase {
 
     /** Legstar listening port. */
     private static final int LEGSTAR_PORT = 8083;
@@ -30,6 +35,7 @@ public class LegstarHttpConnectorFactoryTestCase extends AbstractMuleTestCase {
      * Check that connector can be created.
      * @throws Exception if fails
      */
+    @Test
     public void testCreateFromFactory() throws Exception {
         EndpointURI url = new MuleEndpointURI(getEndpointURI(), muleContext);
         TransportFactory transportFactory = new TransportFactory(muleContext);

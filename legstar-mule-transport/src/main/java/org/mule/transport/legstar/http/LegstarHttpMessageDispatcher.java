@@ -17,9 +17,6 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mule.transport.http.HttpClientMessageDispatcher;
-import org.mule.transport.http.HttpConstants;
-import org.mule.transport.legstar.cixs.transformer.AbstractHostToExecRequestMuleTransformer;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleEvent;
 import org.mule.api.MuleException;
@@ -27,6 +24,9 @@ import org.mule.api.MuleMessage;
 import org.mule.api.endpoint.OutboundEndpoint;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
+import org.mule.transport.http.HttpClientMessageDispatcher;
+import org.mule.transport.http.HttpConstants;
+import org.mule.transport.legstar.cixs.transformer.AbstractHostToExecRequestMuleTransformer;
 
 /**
  * <code>LegstarMessageDispatcher</code> delegates most of its behavior
@@ -60,7 +60,7 @@ public class LegstarHttpMessageDispatcher extends HttpClientMessageDispatcher {
     public final HttpMethod getMethod(final MuleEvent event) throws TransformerException {
         
         if (_log.isDebugEnabled()) {
-            _log.debug("Creating http method for endpoint " + event.getEndpoint());
+            _log.debug("Creating http method for endpoint " + getEndpoint());
         }
         
         HttpMethod httpMethod = super.getMethod(event);

@@ -10,17 +10,17 @@
  ******************************************************************************/
 package org.mule.transport.legstar.http;
 
-import com.mockobjects.dynamic.Mock;
-
+import org.mule.api.construct.FlowConstruct;
 import org.mule.api.endpoint.EndpointBuilder;
 import org.mule.api.endpoint.InboundEndpoint;
-import org.mule.transport.legstar.http.transformer.HostByteArrayToHttpResponse;
-import org.mule.transport.AbstractMessageReceiverTestCase;
-import org.mule.util.CollectionUtils;
-import org.mule.api.service.Service;
 import org.mule.api.transport.MessageReceiver;
 import org.mule.endpoint.EndpointURIEndpointBuilder;
 import org.mule.endpoint.URIBuilder;
+import org.mule.transport.AbstractMessageReceiverTestCase;
+import org.mule.transport.legstar.http.transformer.HostByteArrayToHttpResponse;
+import org.mule.util.CollectionUtils;
+
+import com.mockobjects.dynamic.Mock;
 
 
 /**
@@ -34,10 +34,11 @@ public class LegstarHttpMessageReceiverTestCase extends AbstractMessageReceiverT
 
     /** {@inheritDoc} */
     public MessageReceiver getMessageReceiver() throws Exception {
-        Mock mockService = new Mock(Service.class);
+        Mock mockService = new Mock(FlowConstruct.class);
         mockService.expectAndReturn("getResponseTransformer", null);
         mockService.expectAndReturn("getResponseRouter", null);
-        return new LegstarHttpMessageReceiver(endpoint.getConnector(), (Service) mockService.proxy(), endpoint);
+        return new LegstarHttpMessageReceiver(endpoint.getConnector(),
+                (FlowConstruct) mockService.proxy(), endpoint);
     }
 
     /** {@inheritDoc} */

@@ -73,7 +73,7 @@ public class LegstarTcpMessageDispatcher extends TcpMessageDispatcher {
         MuleMessage requestMuleMessage = event.getMessage();
         Object body = requestMuleMessage.getPayload();
         if (body instanceof byte[]) {
-            Socket socket = getConnector().getSocket(event);
+            Socket socket = getConnector().getSocket(event, getEndpoint());
             dispatchToSocket(socket, event);
 
             try  {
@@ -95,7 +95,7 @@ public class LegstarTcpMessageDispatcher extends TcpMessageDispatcher {
                     } catch (SocketTimeoutException e) {
                         // we don't necessarily expect to receive a response here
                         logger.info("Socket timed out normally while doing a synchronous receive on endpointUri: "
-                                + event.getEndpoint().getEndpointURI());
+                                + getEndpoint().getEndpointURI());
                         return null;
                     }
                 } else {
@@ -103,7 +103,7 @@ public class LegstarTcpMessageDispatcher extends TcpMessageDispatcher {
                 }
             } finally {
                 if (!returnResponse(event, true)) {
-                	getConnector().releaseSocket(socket, event);
+                    getConnector().releaseSocket(socket, event, getEndpoint());
                 }
             }
         } else {
@@ -121,19 +121,19 @@ public class LegstarTcpMessageDispatcher extends TcpMessageDispatcher {
      * @return the data received from the mainframe
      * @throws IOException if receiving fails
      */
-    protected static Object receiveFromSocket(
+    protected Object receiveFromSocket(
             final Socket socket,
             final MuleEvent event) throws IOException {
-        ImmutableEndpoint endpoint = event.getEndpoint();
         int timeout = event.getTimeout();
-        final LegstarTcpConnector connector = (LegstarTcpConnector) endpoint.getConnector();
+        final LegstarTcpConnector connector = (LegstarTcpConnector) getEndpoint()
+                .getConnector();
         DataInputStream underlyingIs = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
         TcpInputStream tis = new TcpInputStream(underlyingIs)
         {
             @Override
             public void close() throws IOException {
                 try {
-                    connector.releaseSocket(socket, event);
+                    connector.releaseSocket(socket, event, getEndpoint());
                 } catch (IOException e) {
                     throw e;
                 } catch (Exception e) {

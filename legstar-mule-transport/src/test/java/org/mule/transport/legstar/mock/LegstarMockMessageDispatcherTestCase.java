@@ -11,9 +11,14 @@
 package org.mule.transport.legstar.mock;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.mule.MessageExchangePattern;
 import org.mule.api.MuleMessage;
 import org.mule.api.endpoint.EndpointBuilder;
@@ -21,7 +26,7 @@ import org.mule.api.endpoint.OutboundEndpoint;
 import org.mule.api.transport.MessageDispatcher;
 import org.mule.endpoint.EndpointURIEndpointBuilder;
 import org.mule.endpoint.URIBuilder;
-import org.mule.tck.AbstractMuleTestCase;
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 
 import com.legstar.config.Constants;
 import com.legstar.coxb.host.HostData;
@@ -32,12 +37,12 @@ import com.legstar.messaging.LegStarHeaderPart;
 import com.legstar.messaging.LegStarMessage;
 import com.legstar.test.coxb.LsfileaeCases;
 
-
 /**
  * Test the LegstarMockMessageDispatcher class.
  *
  */
-public class LegstarMockMessageDispatcherTestCase extends AbstractMuleTestCase {
+public class LegstarMockMessageDispatcherTestCase extends
+        AbstractMuleContextTestCase {
     
     /**
      * Check that the factory works.
@@ -53,6 +58,7 @@ public class LegstarMockMessageDispatcherTestCase extends AbstractMuleTestCase {
      * Test an actual request.
      * @throws Exception if test fails
      */
+    @Test
     public void testRequest() throws Exception {
         LegstarMockMessageDispatcherFactory factory = new LegstarMockMessageDispatcherFactory();
         MessageDispatcher dispatcher = factory.create(getEndpoint());
@@ -64,7 +70,7 @@ public class LegstarMockMessageDispatcherTestCase extends AbstractMuleTestCase {
             assertTrue(e.getMessage().startsWith("Mule message body is not a LegStar message."));
         }
         MuleMessage muleReplyMessage = dispatcher.process(
-                getTestEvent(getLsfileaeMessage100(), getEndpoint())).getMessage();
+                getTestEvent(getLsfileaeMessage100())).getMessage();
         assertTrue(muleReplyMessage != null);
         assertTrue(muleReplyMessage.getPayload() instanceof byte[]);
         byte[] replyPayload = (byte[]) muleReplyMessage.getPayload();

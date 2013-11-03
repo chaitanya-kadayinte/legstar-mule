@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.mule.transport.legstar.wmq.transformer;
 
-
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.transport.legstar.LegstarConnector;
+import org.mule.transport.legstar.LegstarConnectorHelper;
 import org.mule.transport.legstar.cixs.transformer.AbstractHostToExecRequestMuleTransformer;
 import org.mule.transport.legstar.config.HostCredentials;
 import org.mule.transport.legstar.config.HostProgram;
@@ -33,97 +33,109 @@ import com.legstar.mq.mqcih.bind.MqcihTransformers;
  * content of the commarea passed to the target CICS program by CICS MQ Bridge.
  * LegStar transformers typically produce this type of byte arrays.
  * <p/>
- * The return type is a byte array ready to be sent to the mainframe.
- * It is expected that the mainframe has the IBM CICS MQ Bridge installed.
+ * The return type is a byte array ready to be sent to the mainframe. It is
+ * expected that the mainframe has the IBM CICS MQ Bridge installed.
  */
-public class HostToMqcihExecRequestMuleTransformer extends AbstractHostToExecRequestMuleTransformer {
+public class HostToMqcihExecRequestMuleTransformer extends
+        AbstractHostToExecRequestMuleTransformer {
 
     /**
-     * Time in milliseconds that the MQGET calls issued by the bridge
-     * should wait for second and subsequent request messages for the unit of
-     * work started by this message.
+     * Time in milliseconds that the MQGET calls issued by the bridge should
+     * wait for second and subsequent request messages for the unit of work
+     * started by this message.
      * */
     private int _waitInterval = -1;
-    
-    
-    /** Flag indicating that a syncpoint should be taken upon return from 
-     * execution of DPL program.
-     * TODO revise when we implement single phase commit */
+
+    /**
+     * Flag indicating that a syncpoint should be taken upon return from
+     * execution of DPL program. TODO revise when we implement single phase
+     * commit
+     */
     private static final int MQCIH_SYNC_ON_RETURN = 4;
 
     /** Flag indicating that reply should not include trailing low-values. */
     private static final int MQCIH_REPLY_WITHOUT_NULLS = 2;
-    
+
     /** Byte length for a CICS program name. */
     private static final int CICS_PROGRAM_NAME_LEN = 8;
-    
+
     /**
      * This method wraps a single part payload into an MQCIH formatted message.
-     * The payload is the concatenation of the MQCIH header, the target
-     * CICS program name and finally the commarea data.
+     * The payload is the concatenation of the MQCIH header, the target CICS
+     * program name and finally the commarea data.
+     * 
      * @param hostData the single part mainframe payload
      * @param esbMessage the original mule message
      * @return the payload MQCIH message
      * @throws TransformerException if wrapping fails
      */
-    public byte[] wrapHostData(
-            final byte[] hostData, final MuleMessage esbMessage) throws TransformerException {
+    public byte[] wrapHostData(final byte[] hostData,
+            final MuleMessage esbMessage) throws TransformerException {
         try {
-            LegstarConnector connector = (LegstarConnector) getEndpoint().getConnector();
-            byte[] mqcihBytes = getMqcihBytes(getHostProgram(),
-                    connector.getHostCredentials(esbMessage));
-            byte[] result =
-                new byte[mqcihBytes.length + CICS_PROGRAM_NAME_LEN + hostData.length];
-            System.arraycopy(mqcihBytes, 0,
-                    result, 0, mqcihBytes.length);
+
+            HostCredentials hostCredentials = null;
+            if (getEndpoint() == null) {
+                hostCredentials = LegstarConnectorHelper
+                        .getHostCredentials(esbMessage);
+            } else {
+                LegstarConnector connector = (LegstarConnector) getEndpoint()
+                        .getConnector();
+                hostCredentials = connector.getHostCredentials(esbMessage);
+            }
+            byte[] mqcihBytes = getMqcihBytes(getHostProgram(), hostCredentials);
+            byte[] result = new byte[mqcihBytes.length + CICS_PROGRAM_NAME_LEN
+                    + hostData.length];
+            System.arraycopy(mqcihBytes, 0, result, 0, mqcihBytes.length);
 
             /* Add program name (pad with spaces if too short) */
             byte[] programBytes = "        ".getBytes(getHostCharset());
-            System.arraycopy(getHostProgram().getName().getBytes(getHostCharset()), 0,
+            System.arraycopy(
+                    getHostProgram().getName().getBytes(getHostCharset()), 0,
                     programBytes, 0, getHostProgram().getName().length());
             System.arraycopy(programBytes, 0, result, mqcihBytes.length,
                     CICS_PROGRAM_NAME_LEN);
 
-            System.arraycopy(hostData, 0,
-                    result, mqcihBytes.length + CICS_PROGRAM_NAME_LEN, hostData.length);
-            
+            System.arraycopy(hostData, 0, result, mqcihBytes.length
+                    + CICS_PROGRAM_NAME_LEN, hostData.length);
+
             return result;
         } catch (TransformerException e) {
-            throw new TransformerException(
-                    getI18NMessages().hostTransformFailure(), this, e);
+            throw new TransformerException(getI18NMessages()
+                    .hostTransformFailure(), this, e);
         } catch (UnsupportedEncodingException e) {
-            throw new TransformerException(
-                    getI18NMessages().encodingFailure(getHostCharset()), this, e);
+            throw new TransformerException(getI18NMessages().encodingFailure(
+                    getHostCharset()), this, e);
         }
     }
 
-    /** {@inheritDoc}  */
+    /** {@inheritDoc} */
     @Override
     public byte[] wrapHostData(final Map < String, byte[] > hostDataMap,
             final MuleMessage esbMessage) throws TransformerException {
-        throw new TransformerException(
-                getI18NMessages().noMultiPartSupportFailure(), this);
+        throw new TransformerException(getI18NMessages()
+                .noMultiPartSupportFailure(), this);
     }
 
-    /** {@inheritDoc}  */
+    /** {@inheritDoc} */
     @Override
-	public void setMessageProperties(final MuleMessage esbMessage) {
-		/* CKBR uses the correlationID for UOW lifecycle management. */
-		esbMessage.setCorrelationId("AMQ!NEW_SESSION_CORRELID");
+    public void setMessageProperties(final MuleMessage esbMessage) {
+        /* CKBR uses the correlationID for UOW lifecycle management. */
+        esbMessage.setCorrelationId("AMQ!NEW_SESSION_CORRELID");
 
-		/*
-		 * Tells MQ-mainframe that the content is an MQCIH payload and that it
-		 * is already encoded in mainframe character set.
-		 */
-		esbMessage.setOutboundProperty("JMS_IBM_Format", "MQCICS  ");
-		esbMessage.setOutboundProperty("JMS_IBM_Character_Set",
-				getCCSID(getHostCharset()));
+        /*
+         * Tells MQ-mainframe that the content is an MQCIH payload and that it
+         * is already encoded in mainframe character set.
+         */
+        esbMessage.setOutboundProperty("JMS_IBM_Format", "MQCICS  ");
+        esbMessage.setOutboundProperty("JMS_IBM_Character_Set",
+                getCCSID(getHostCharset()));
 
-	}
+    }
 
     /**
-     * The mainframe CCSID can be derived from the java character set.
-     * TODO Find a more reliable way of deriving CCSID from java charset name.
+     * The mainframe CCSID can be derived from the java character set. TODO Find
+     * a more reliable way of deriving CCSID from java charset name.
+     * 
      * @param hostCharset the mainframe character set
      * @return the MQ CCSID
      */
@@ -139,47 +151,53 @@ public class HostToMqcihExecRequestMuleTransformer extends AbstractHostToExecReq
         }
         return 500;
     }
+
     /**
      * Produce the serialization of the MQCIH header as a byte array in the
      * target host character set.
+     * 
      * @param hostProgram the target program attributes
-     * @param hostCredentials the credentials used to authenticate to the mainframe
+     * @param hostCredentials the credentials used to authenticate to the
+     *            mainframe
      * @return MQCIH as a byte array
      * @throws TransformerException if message cannot be built
      */
-    public final byte[] getMqcihBytes(
-            final HostProgram hostProgram,
+    public final byte[] getMqcihBytes(final HostProgram hostProgram,
             final HostCredentials hostCredentials) throws TransformerException {
         try {
             Mqcih mqcih = new Mqcih();
 
             /* MQCIH needs the output length to include the program name length */
-            mqcih.setMqcihOutputdatalength(
-                    hostProgram.getMaxDataLength() + CICS_PROGRAM_NAME_LEN);
-            
-            /* Just in case this is needed. Doc says: only applies if you are using
-             *  an authorization level of VERIFY_UOW or VERIFY_ALL*/
-            mqcih.setMqcihAuthenticator(new String(hostCredentials.getPassword()));
-            
+            mqcih.setMqcihOutputdatalength(hostProgram.getMaxDataLength()
+                    + CICS_PROGRAM_NAME_LEN);
+
+            /*
+             * Just in case this is needed. Doc says: only applies if you are
+             * using an authorization level of VERIFY_UOW or VERIFY_ALL
+             */
+            mqcih.setMqcihAuthenticator(new String(hostCredentials
+                    .getPassword()));
+
             if (getWaitInterval() > -1) {
                 mqcih.setMqcihGetwaitinterval(getWaitInterval());
             }
-            mqcih.setMqcihFlags(MQCIH_REPLY_WITHOUT_NULLS + MQCIH_SYNC_ON_RETURN);
+            mqcih.setMqcihFlags(MQCIH_REPLY_WITHOUT_NULLS
+                    + MQCIH_SYNC_ON_RETURN);
 
             /* TODO optimize */
             MqcihTransformers mqcihTransformers = new MqcihTransformers();
             return mqcihTransformers.toHost(mqcih, getHostCharset());
-                    
+
         } catch (HostTransformException e) {
-            throw new TransformerException(
-                    getI18NMessages().hostTransformFailure(), this, e);
+            throw new TransformerException(getI18NMessages()
+                    .hostTransformFailure(), this, e);
         }
     }
-    
+
     /**
      * @return Time in milliseconds that the MQGET calls issued by the bridge
-     * should wait for second and subsequent request messages for the unit of
-     * work started by this message.
+     *         should wait for second and subsequent request messages for the
+     *         unit of work started by this message.
      * */
     public final int getWaitInterval() {
         return _waitInterval;
@@ -187,11 +205,11 @@ public class HostToMqcihExecRequestMuleTransformer extends AbstractHostToExecReq
 
     /**
      * @param waitInterval Time in milliseconds that the MQGET calls issued by
-     * the bridge should wait for second and subsequent request messages for
-     * the unit of work started by this message.
+     *            the bridge should wait for second and subsequent request
+     *            messages for the unit of work started by this message.
      * */
     public final void setWaitInterval(final int waitInterval) {
-        _waitInterval =  waitInterval;
+        _waitInterval = waitInterval;
     }
 
 }

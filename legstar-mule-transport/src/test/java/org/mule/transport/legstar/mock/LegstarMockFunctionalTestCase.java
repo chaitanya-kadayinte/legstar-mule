@@ -10,18 +10,18 @@
  ******************************************************************************/
 package org.mule.transport.legstar.mock;
 
-import java.io.ObjectInputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
-import org.mule.tck.functional.FunctionalTestComponent;
-import org.mule.transport.http.ReleasingInputStream;
+import org.mule.tck.junit4.AbstractMuleTestCase;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 import com.legstar.test.coxb.LsfileaeCases;
 import com.legstar.test.coxb.lsfileae.Dfhcommarea;
 import com.legstar.test.coxb.lsfileae.ObjectFactory;
-
 /**
  * Test a roundtrip on the legstar mock transport.
  *
@@ -33,7 +33,8 @@ public class LegstarMockFunctionalTestCase extends FunctionalTestCase {
      */
     public LegstarMockFunctionalTestCase() {
         super();
-        System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, "600");
+        System.setProperty(AbstractMuleTestCase.TEST_TIMEOUT_SYSTEM_PROPERTY,
+                "600");
     }
     
     /** {@inheritDoc}*/
@@ -45,22 +46,16 @@ public class LegstarMockFunctionalTestCase extends FunctionalTestCase {
      * Perform round trip.
      * @throws Exception if test fails
      */
+    @Test
     public void testSend() throws Exception {        
-        FunctionalTestComponent service =
-            (FunctionalTestComponent) getComponent("lsfileaeAdapterService");
-        assertNotNull(service);
 
-        /* Simulate a call coming from a mainframe */
         MuleClient client = new MuleClient(muleContext);
         MuleMessage result = client.send("lsfileaeClientEndpoint",
                 getJavaRequest(), null);
 
-        /* The HTTP transport sends back a java serialized object */
         assertTrue(null == result.getExceptionPayload());
-        assertTrue(result.getPayload() instanceof ReleasingInputStream);
-        ObjectInputStream in = new ObjectInputStream(
-                (ReleasingInputStream) result.getPayload());
-        Dfhcommarea reply = (Dfhcommarea) in.readObject();
+        assertTrue(result.getPayload() instanceof Dfhcommarea);
+        Dfhcommarea reply = (Dfhcommarea) result.getPayload();
         LsfileaeCases.checkJavaObjectReply100(reply);
     }
 

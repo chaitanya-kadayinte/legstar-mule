@@ -21,7 +21,7 @@
     -->
     <target name="compile" depends="init">
         <mkdir dir="bin"/>
-        <javac  target="1.5"
+        <javac  target="1.6"
             srcdir="src"
             destdir="bin"
             fork="yes"

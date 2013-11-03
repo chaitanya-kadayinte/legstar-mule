@@ -20,6 +20,10 @@
 
 package org.mule.transport.legstar.tcp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.mule.MessageExchangePattern;
 import org.mule.api.endpoint.EndpointBuilder;
 import org.mule.api.endpoint.EndpointURI;
@@ -27,18 +31,18 @@ import org.mule.api.endpoint.OutboundEndpoint;
 import org.mule.endpoint.EndpointURIEndpointBuilder;
 import org.mule.endpoint.MuleEndpointURI;
 import org.mule.endpoint.URIBuilder;
-import org.mule.tck.AbstractMuleTestCase;
-
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 /**
  * Test legstar tcp endpoints.
  *
  */
-public class LegstarTcpEndpointTestCase extends AbstractMuleTestCase {
+public class LegstarTcpEndpointTestCase extends AbstractMuleContextTestCase {
 
     /**
      * Create an endpoint and check its properties.
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testValidEndpointURI() throws Exception {
         EndpointURI endpointUri = new MuleEndpointURI("legstar-tcp://localhost:1234", muleContext);
         endpointUri.initialise();
@@ -54,6 +58,7 @@ public class LegstarTcpEndpointTestCase extends AbstractMuleTestCase {
      * Check the endpoint properties when used for outbound requests.
      * @throws Exception if test fails
      */
+    @Test
 	public void testEndpoint() throws Exception {
 		EndpointBuilder endpointBuilder = new EndpointURIEndpointBuilder(
 				new URIBuilder("legstar-tcp://mainframe:3011", muleContext));

@@ -20,15 +20,20 @@
 
 package org.mule.transport.legstar.mock;
 
-import org.mule.api.endpoint.InboundEndpoint;
-import org.mule.tck.AbstractMuleTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.mule.api.endpoint.InboundEndpoint;
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 
 /**
  * Tests the creation of the LegstarMockConnector instance by Mule.
  *
  */
-public class LegstarMockConnectorFactoryTestCase extends AbstractMuleTestCase {
+public class LegstarMockConnectorFactoryTestCase extends
+        AbstractMuleContextTestCase {
 
     /* For general guidelines on writing transports see
        http://mule.mulesource.org/display/MULE/Writing+Transports */
@@ -37,6 +42,7 @@ public class LegstarMockConnectorFactoryTestCase extends AbstractMuleTestCase {
      * Simulates the way Mule will create the connector.
      * @throws Exception if creation fails
      */
+    @Test
     public void testCreateFromFactory() throws Exception  {
         InboundEndpoint endpoint = muleContext.getEndpointFactory()
                 .getInboundEndpoint(getEndpointURI());

@@ -20,20 +20,25 @@
 
 package org.mule.transport.legstar.wmq;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.mule.api.endpoint.InboundEndpoint;
-import org.mule.tck.AbstractMuleTestCase;
-
-
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 /**
  * Tests the creation of the LegstarTcpConnector instance by Mule.
  *
  */
-public class LegstarWmqConnectorFactoryTestCase extends AbstractMuleTestCase {
+public class LegstarWmqConnectorFactoryTestCase extends
+        AbstractMuleContextTestCase {
 
     /**
      * Simulates the way Mule will create the connector.
      * @throws Exception if creation fails
      */
+    @Test
     public void testCreateFromFactory() throws Exception {
         InboundEndpoint endpoint = muleContext.getEndpointFactory()
                 .getInboundEndpoint(getEndpointURI());

@@ -20,9 +20,11 @@
 
 package org.mule.transport.legstar.tcp;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.mule.api.transport.Connector;
 import org.mule.transport.AbstractConnectorTestCase;
-
 /**
  * Direct test of the tcp connector.
  *
@@ -51,6 +53,7 @@ public class LegstarTcpConnectorTestCase extends AbstractConnectorTestCase {
      * test setting and retrieving any custom properties.
      * @throws Exception if test fails.
      */
+    @Test
     public void testProperties() throws Exception {
         assertTrue(((LegstarTcpConnector)getConnector()).isSyncEnabled("legstar-tcp"));
     }

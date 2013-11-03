@@ -19,9 +19,12 @@
  */
 package org.mule.transport.legstar.mock.config;
 
-import org.mule.tck.FunctionalTestCase;
-import org.mule.transport.legstar.mock.LegstarMockConnector;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.mule.tck.junit4.FunctionalTestCase;
+import org.mule.transport.legstar.mock.LegstarMockConnector;
 /**
  * Test for LegstarMockNamespaceHandler.
  */
@@ -36,6 +39,7 @@ public class LegstarMockNamespaceHandlerTestCase extends FunctionalTestCase {
      * Creates a connector from a spring configuration.
      * @throws Exception if creation fails
      */
+    @Test
     public void testLegstarMockConfig() throws Exception {
         LegstarMockConnector c = 
             (LegstarMockConnector) muleContext.getRegistry().lookupConnector("legstarMockConnector");

@@ -10,20 +10,21 @@
  ******************************************************************************/
 package org.mule.transport.legstar.transformer;
 
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mule.api.transformer.Transformer;
 import org.mule.transformer.AbstractMessageTransformer;
 import org.mule.transformer.AbstractTransformerTestCase;
-import org.mule.api.transformer.Transformer;
 
 import com.legstar.coxb.host.HostData;
 import com.legstar.coxb.transform.HostTransformException;
 import com.legstar.test.coxb.LsfileacCases;
 import com.legstar.test.coxb.lsfileac.bind.ReplyDataTransformers;
 import com.legstar.test.coxb.lsfileac.bind.ReplyStatusTransformers;
-
 /**
  * Test AbstractJavaToHostTransformer class.
  *

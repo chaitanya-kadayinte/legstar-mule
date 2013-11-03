@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.mule.transport.legstar.http.transformer;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,16 +20,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpVersion;
-import org.mule.RequestContext;
+import org.mule.api.MuleEvent;
+import org.mule.api.transformer.Transformer;
+import org.mule.api.transport.OutputHandler;
 import org.mule.transformer.AbstractMessageTransformer;
 import org.mule.transformer.AbstractTransformerTestCase;
 import org.mule.transport.http.HttpResponse;
 import org.mule.transport.legstar.cixs.transformer.HostToLegstarExecRequestMuleTransformer;
 import org.mule.transport.legstar.cixs.transformer.HostToMultipartLegstarExecRequestMuleTransformerTest;
 import org.mule.transport.legstar.config.ConfigUtils;
-import org.mule.api.MuleEvent;
-import org.mule.api.transformer.Transformer;
-import org.mule.api.transport.OutputHandler;
 
 import com.legstar.coxb.host.HostData;
 import com.legstar.messaging.HeaderPartException;
@@ -34,12 +36,13 @@ import com.legstar.messaging.HostMessageFormatException;
 import com.legstar.messaging.LegStarMessage;
 import com.legstar.messaging.LegStarMessagePart;
 import com.legstar.test.coxb.LsfileacCases;
-
 /**
  * Test HostByteArrayToHttpResponse class.
  *
  */
 public class MultipartHostByteArrayToHttpResponseTest extends AbstractTransformerTestCase {
+
+    private MuleEvent muleEvent;
 
     /** {@inheritDoc} */
     public AbstractMessageTransformer getTransformer() throws Exception {
@@ -83,6 +86,7 @@ public class MultipartHostByteArrayToHttpResponseTest extends AbstractTransforme
             public void write(
                     final MuleEvent event,
                     final OutputStream out) throws IOException {
+                muleEvent = event;
                 out.write(HostData.toByteArray(
                         HostToMultipartLegstarExecRequestMuleTransformerTest.LSFILEAC_MESSAGE_HOST_DATA));
             }
@@ -107,11 +111,11 @@ public class MultipartHostByteArrayToHttpResponseTest extends AbstractTransforme
                     return false;
                 }
                 ByteArrayOutputStream outExpected = new ByteArrayOutputStream();
-                httpExpected.getBody().write(RequestContext.getEvent(), outExpected);
+                httpExpected.getBody().write(muleEvent, outExpected);
                 byte[] bodyExpected = outExpected.toByteArray();
 
                 ByteArrayOutputStream outResult = new ByteArrayOutputStream();
-                httpResult.getBody().write(RequestContext.getEvent(), outResult);
+                httpResult.getBody().write(muleEvent, outResult);
                 byte[] bodyResult = outResult.toByteArray();
                 
                 LegStarMessage msgExpected = new LegStarMessage();

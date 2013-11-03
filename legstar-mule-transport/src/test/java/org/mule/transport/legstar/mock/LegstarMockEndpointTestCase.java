@@ -20,15 +20,17 @@
 
 package org.mule.transport.legstar.mock;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.endpoint.MuleEndpointURI;
-import org.mule.tck.AbstractMuleTestCase;
-
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 /**
  * Test legstar mock endpoints.
  *
  */
-public class LegstarMockEndpointTestCase extends AbstractMuleTestCase {
+public class LegstarMockEndpointTestCase extends AbstractMuleContextTestCase {
 
     /* For general guidelines on writing transports see
        http://mule.mulesource.org/display/MULE/Writing+Transports */
@@ -37,6 +39,7 @@ public class LegstarMockEndpointTestCase extends AbstractMuleTestCase {
      * Create an endpoint and check its properties.
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testValidEndpointURI() throws Exception  {
         EndpointURI endpointUri = new MuleEndpointURI("legstar-mock://localhost", muleContext);
         endpointUri.initialise();

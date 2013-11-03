@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.mule.transport.legstar.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -35,7 +39,6 @@ import com.legstar.messaging.HostMessageFormatException;
 import com.legstar.messaging.LegStarHeaderPart;
 import com.legstar.messaging.LegStarMessage;
 import com.legstar.test.coxb.LsfileaeCases;
-
 /**
  * Test the LegstarHttpMessageFactory class.
  * For general guidelines on writing transports see

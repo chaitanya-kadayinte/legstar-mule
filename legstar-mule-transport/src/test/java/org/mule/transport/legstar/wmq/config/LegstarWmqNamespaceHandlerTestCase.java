@@ -19,9 +19,12 @@
  */
 package org.mule.transport.legstar.wmq.config;
 
-import org.mule.tck.FunctionalTestCase;
-import org.mule.transport.legstar.wmq.LegstarWmqConnector;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.mule.tck.junit4.FunctionalTestCase;
+import org.mule.transport.legstar.wmq.LegstarWmqConnector;
 /**
  * Test for LegstarWmqNamespaceHandlerTestCase.
  */
@@ -36,6 +39,7 @@ public class LegstarWmqNamespaceHandlerTestCase extends FunctionalTestCase {
      * Creates a connector from a spring configuration.
      * @throws Exception if creation fails
      */
+    @Test
     public void testLegstarWmqConfig() throws Exception {
         LegstarWmqConnector c = (LegstarWmqConnector) muleContext.getRegistry().lookupConnector("legstarWmqConnector");
         assertNotNull(c);

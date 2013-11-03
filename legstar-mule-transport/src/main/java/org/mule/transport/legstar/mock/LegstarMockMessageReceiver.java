@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.mule.transport.legstar.mock;
 
-import org.mule.transport.ConnectException;
-import org.mule.transport.AbstractMessageReceiver;
-import org.mule.api.service.Service;
+import org.mule.api.construct.FlowConstruct;
 import org.mule.api.endpoint.InboundEndpoint;
 import org.mule.api.lifecycle.CreateException;
 import org.mule.api.transport.Connector;
+import org.mule.transport.AbstractMessageReceiver;
+import org.mule.transport.ConnectException;
 
 /**
  * <code>LegstarmockMessageReceiver</code> TODO see if that's necessary.
@@ -27,17 +27,18 @@ public class LegstarMockMessageReceiver extends  AbstractMessageReceiver {
 
     /**
      * Constructs a message receiver for a component.
+     * 
      * @param connector the Mule connector
-     * @param service the Mule service 
+     * @param flowConstruct the Mule flow
      * @param endpoint the Mule endpoint
      * @throws CreateException if construction fails
      */
     public LegstarMockMessageReceiver(
             final Connector connector,
-            final Service service,
+            final FlowConstruct flowConstruct,
             final InboundEndpoint endpoint)
     throws CreateException {
-        super(connector, service, endpoint);
+        super(connector, flowConstruct, endpoint);
     }
 
     /** {@inheritDoc}*/

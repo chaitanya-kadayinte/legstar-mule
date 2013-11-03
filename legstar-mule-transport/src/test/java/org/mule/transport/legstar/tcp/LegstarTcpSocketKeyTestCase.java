@@ -10,24 +10,29 @@
  ******************************************************************************/
 package org.mule.transport.legstar.tcp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.mule.api.endpoint.EndpointBuilder;
 import org.mule.api.endpoint.OutboundEndpoint;
 import org.mule.api.security.Credentials;
 import org.mule.endpoint.EndpointURIEndpointBuilder;
 import org.mule.endpoint.URIBuilder;
-import org.mule.tck.AbstractMuleTestCase;
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 import org.mule.transport.legstar.config.HostCredentials;
-
 /**
  * Test the LegstarTcpSocketKey class.
  *
  */
-public class LegstarTcpSocketKeyTestCase extends AbstractMuleTestCase {
+public class LegstarTcpSocketKeyTestCase extends AbstractMuleContextTestCase {
     
     /**
      * Check that null credentials are accepted.
      * @throws Exception if test fails
      */
+    @Test
     public void testNullCredentials() throws Exception {
         LegstarTcpSocketKey key1 = new LegstarTcpSocketKey(getEndpointA(), null);
         LegstarTcpSocketKey key2 = new LegstarTcpSocketKey(getEndpointA(), null);
@@ -40,6 +45,7 @@ public class LegstarTcpSocketKeyTestCase extends AbstractMuleTestCase {
      * Check that null credentials are accepted 2.
      * @throws Exception if test fails
      */
+    @Test
     public void testDiffHostNullCredentials() throws Exception {
         LegstarTcpSocketKey key1 = new LegstarTcpSocketKey(getEndpointA(), null);
         LegstarTcpSocketKey key2 = new LegstarTcpSocketKey(getEndpointB(), null);
@@ -51,6 +57,7 @@ public class LegstarTcpSocketKeyTestCase extends AbstractMuleTestCase {
      * Check same credentials.
      * @throws Exception if test fails
      */
+    @Test
     public void testSameCredentials() throws Exception {
         Credentials credentials = new HostCredentials("toutan", "khamon".toCharArray());
         LegstarTcpSocketKey key1 = new LegstarTcpSocketKey(getEndpointA(), credentials);
@@ -64,6 +71,7 @@ public class LegstarTcpSocketKeyTestCase extends AbstractMuleTestCase {
      * Check different host same credentials.
      * @throws Exception if test fails
      */
+    @Test
     public void testDiffHostSameCredentials() throws Exception {
         Credentials credentials = new HostCredentials("toutan", "khamon".toCharArray());
         LegstarTcpSocketKey key1 = new LegstarTcpSocketKey(getEndpointA(), credentials);
@@ -77,6 +85,7 @@ public class LegstarTcpSocketKeyTestCase extends AbstractMuleTestCase {
      * Check same host different credentials.
      * @throws Exception if test fails
      */
+    @Test
     public void testSameHostDiffCredentials() throws Exception {
         Credentials credentials1 = new HostCredentials("toutan", "khamon".toCharArray());
         LegstarTcpSocketKey key1 = new LegstarTcpSocketKey(getEndpointA(), credentials1);

@@ -154,7 +154,7 @@
     <!-- Compile the generated service classes
     -->
     <target name="compileMule2Cicxs" depends="generateMule2Cixs">
-        <javac target="1.5"
+        <javac target="1.6"
             srcdir="${src.dir}"
             destdir="${bin.dir}"
             classpathref="classpath"
