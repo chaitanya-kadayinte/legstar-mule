@@ -199,10 +199,11 @@
                     <xsd:element name="input-container" type="hostContainerType" minOccurs="0" maxOccurs="10" />
                     <xsd:element name="output-container" type="hostContainerType" minOccurs="0"  maxOccurs="10" />
                 </xsd:sequence>
-                <xsd:attribute name="name" type="xsd:string" use="required">
+                
+                <xsd:attribute name="programName" type="xsd:string" use="required">
                     <xsd:annotation>
                         <xsd:documentation>
-                            Name of the mainframe program to call.
+                            Name of the mainframe program to call (alternative to name attribute).
                             Must be a defined mainframe program.
                         </xsd:documentation>
                     </xsd:annotation>

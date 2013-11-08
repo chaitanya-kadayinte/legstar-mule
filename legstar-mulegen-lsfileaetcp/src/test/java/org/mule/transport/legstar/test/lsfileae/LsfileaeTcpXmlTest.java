@@ -10,13 +10,16 @@
  ******************************************************************************/
 package org.mule.transport.legstar.test.lsfileae;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
-import org.mule.transport.legstar.tcp.LegstarTcpConnector;
+import org.junit.Test;
 import org.mule.api.MuleMessage;
+import org.mule.module.client.MuleClient;
+import org.mule.tck.junit4.FunctionalTestCase;
+import org.mule.transport.legstar.tcp.LegstarTcpConnector;
 
 /**
  * Test the adapter for the LSFILEAE mainframe program.
@@ -39,6 +42,7 @@ public class LsfileaeTcpXmlTest extends FunctionalTestCase {
      * Client sends an XML string and receive one as a reply.
      * @throws Exception if test fails
      */
+    @Test
     public void testLsfileae() throws Exception {
         MuleClient client = new MuleClient(muleContext);
         Map < String, Object > properties = new HashMap < String, Object >();

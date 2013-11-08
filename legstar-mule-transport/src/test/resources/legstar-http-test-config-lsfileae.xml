@@ -46,7 +46,7 @@
         <legstar:host-to-legstar-transformer
             hostCharset="IBM01147">
             <legstar:host-program
-                name="LSFILEAE"
+                programName="LSFILEAE"
                 maxDataLength="79"
                 transID="LALT"
                 syncOnReturn="true"

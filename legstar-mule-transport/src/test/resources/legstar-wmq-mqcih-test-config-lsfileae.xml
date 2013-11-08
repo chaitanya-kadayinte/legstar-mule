@@ -55,7 +55,7 @@
             hostCharset="IBM01147"
             replyTo="mainframeReplyEndpoint">
             <legstar:host-program
-                name="LSFILEAE"
+                programName="LSFILEAE"
                 maxDataLength="79"/>
         </legstar-wmq:host-to-mqcih-transformer>
 

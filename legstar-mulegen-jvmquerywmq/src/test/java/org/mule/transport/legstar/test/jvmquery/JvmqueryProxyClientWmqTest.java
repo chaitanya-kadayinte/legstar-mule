@@ -11,12 +11,15 @@
 package org.mule.transport.legstar.test.jvmquery;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 import com.legstar.coxb.host.HostData;
 
@@ -69,6 +72,7 @@ public class JvmqueryProxyClientWmqTest extends FunctionalTestCase {
      * Call the esb and check response.
      * @throws Exception if test fails
      */
+    @Test
     public void testRun() throws Exception {
         MuleClient client = new MuleClient(muleContext);
         Map < String, String > props = new HashMap < String, String >();

@@ -1,0 +1,11 @@
+Set environment variable MULE3_HOME to point to a a mule ce unzip location
+
+(You will also have to set MULE_HOME if you want to run Mule manually)
+
+Add these to %MULE3_HOME%\apps\default\mule-config.xml:
+
+  <management:jmx-default-config registerMx4jAdapter="true">
+  </management:jmx-default-config> 
+  
+  requires a namespace: xmlns:management="http://www.mulesoft.org/schema/mule/management"
+  and schemaLocation: http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/3.4/mule-management.xsd

@@ -11,15 +11,17 @@
 package org.mule.transport.legstar.test.jvmquery;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.mule.tck.FunctionalTestCase;
+import org.junit.Test;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 import com.legstar.coxb.host.HostData;
-
 
 /**
  * Test the generated proxy.
@@ -45,7 +47,7 @@ public class JvmqueryHttpTest extends FunctionalTestCase {
     public static final String EXPECTED_MAINFRAME_RESPONSE_DATA =
         /* 0 0 0 2 F r a n c e - - - - - - - - - - - - - - - - - - - - - -*/
         "00000002c6998195838540404040404040404040404040404040404040404040"
-        /* - - - - € - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+        /* - - - - ï¿½ - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
         + "404040409f404040404040404040404040404040404040404040404040404040"
         /*  - - - - D : \ L e g s e m \ L e g s t a r \ j b o s s \ m l i t*/
         + "40404040c47ae0d38587a28594e0d38587a2a38199e0918296a2a2e0949389a3"
@@ -53,7 +55,7 @@ public class JvmqueryHttpTest extends FunctionalTestCase {
         + "a39385e0c37ae0d799968799819440c6899385a2e0d181a581e0918492f14bf6"
         /* . 0 - - v e n d r e d i - 1 0 - o c t o b r e - 2 0 0 8 - 1 4 -*/
         + "4bf04040a58595849985848940f1f0409683a39682998540f2f0f0f840f1f440"
-        /* h - 2 8 f r a n ç a i s - - - - - - - - - - - - - - - - - - - -*/
+        /* h - 2 8 f r a n ï¿½ a i s - - - - - - - - - - - - - - - - - - - -*/
         + "8840f2f886998195488189a24040404040404040404040404040404040404040"
         /* - - - - */
         + "40404040";
@@ -68,6 +70,7 @@ public class JvmqueryHttpTest extends FunctionalTestCase {
      * Call the esb and check response.
      * @throws Exception if test fails
      */
+    @Test
     public void testRun() throws Exception {
         String response = invoke(MAINFRAME_REQUEST_DATA,
                 EXPECTED_MAINFRAME_RESPONSE_DATA.length() / 2);

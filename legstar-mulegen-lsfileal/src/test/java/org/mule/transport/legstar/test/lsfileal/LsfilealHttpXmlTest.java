@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.mule.transport.legstar.test.lsfileal;
 
-import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.mule.api.MuleMessage;
+import org.mule.module.client.MuleClient;
+import org.mule.tck.junit4.FunctionalTestCase;
 
 /**
  * Test the adapter for the LSFILEAL mainframe program.
@@ -35,6 +38,7 @@ public class LsfilealHttpXmlTest extends FunctionalTestCase {
      * Client sends an XML string and receive one as a reply.
      * @throws Exception if test fails
      */
+    @Test
     public void testLsfileal() throws Exception {
         MuleClient client = new MuleClient(muleContext);
         MuleMessage message = client.send(
