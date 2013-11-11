@@ -25,6 +25,15 @@ import com.legstar.codegen.CodeGenUtil;
  */
 public class TransformersTemplatesTest extends AbstractTestTemplate {
 
+    /** True when references should be created. */
+    private static final boolean CREATE_REFERENCES = false;
+
+    /** @{inheritDoc  */
+    public void setUp() {
+        super.setUp();
+        setCreateReferences(CREATE_REFERENCES);
+    }
+
     /**
      * Case LSFILEAE.
      * @throws Exception if something goes wrong
@@ -60,7 +69,26 @@ public class TransformersTemplatesTest extends AbstractTestTemplate {
     }
 
     /**
+     * Case MultiStruct.
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testMultiStructToHostMuleTransformer() throws Exception {
+
+        CixsMuleComponent muleComponent = Samples.getMultiStructMuleComponent();
+        CixsOperation operation = muleComponent.getCixsOperations().get(0);
+        File transformersDir = getTransformersDir(muleComponent);
+        CodeGenUtil.checkDirectory(transformersDir, true);
+        AbstractCixsMuleGenerator.generateJavaToHostTransformer(operation,
+                getParameters(), transformersDir,
+                operation.getRequestHolderType(), "Request");
+        compare(transformersDir, operation.getRequestHolderType()
+                + "ToHostMuleTransformer.java", muleComponent.getName());
+    }
+
+    /**
      * Case JVMQuery.
+     * 
      * @throws Exception if something goes wrong
      */
     public void testJvmQueryToHostMuleTransformer() throws Exception {
@@ -231,6 +259,26 @@ public class TransformersTemplatesTest extends AbstractTestTemplate {
         compare(transformersDir,
                 "HostTo" + operation.getRequestHolderType() + "XmlMuleTransformer.java",
                 muleComponent.getName());
+    }
+
+    /**
+     * Case Host to MultiStruct.
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testHostToMultiStructMuleTransformer() throws Exception {
+
+        CixsMuleComponent muleComponent = Samples.getMultiStructMuleComponent();
+        CixsOperation operation = muleComponent.getCixsOperations().get(0);
+        File transformersDir = getTransformersDir(muleComponent);
+        operation
+                .setNamespace(Jaxws2CixsGenerator.DEFAULT_WSDL_TARGET_NAMESPACE_PREFIX
+                        + '/' + muleComponent.getName());
+        AbstractCixsMuleGenerator.generateHostToJavaTransformer(operation,
+                getParameters(), transformersDir, "MultiStructRequestHolder",
+                "Request");
+        compare(transformersDir, "HostTo" + operation.getRequestHolderType()
+                + "MuleTransformer.java", muleComponent.getName());
     }
 
     /**

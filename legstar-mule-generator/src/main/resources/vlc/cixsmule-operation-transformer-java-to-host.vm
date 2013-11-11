@@ -7,14 +7,20 @@
 #set($transformerType = "${holderType}ToHostMuleTransformer")
 import org.mule.transformer.types.SimpleDataType;
 import org.mule.transport.legstar.transformer.AbstractJavaToHostMuleTransformer;
-#if($holder)
+#if($cixsOperation.hasChannel())
 import java.util.HashMap;
 import com.legstar.coxb.transform.AbstractTransformers;
 import org.mule.api.transformer.TransformerException;
 #else
+#if($cixsStructures.size() > 1)
+import java.util.LinkedList;
+import java.util.List;
+import com.legstar.coxb.transform.AbstractTransformers;
+#else
 #foreach($cixsStructure in $cixsStructures)
 #set($javaClassName = ${cixsHelper.getJavaClassName(${cixsStructure.jaxbPackageName}, ${cixsStructure.jaxbType})})
 import ${javaClassName};
+#end
 #end
 #end
 #foreach($cixsStructure in $cixsStructures)
@@ -32,25 +38,55 @@ import ${helper.getQualClassName(${cixsStructure.coxbPackageName}, ${cixsStructu
  */
 public class ${transformerType} extends AbstractJavaToHostMuleTransformer {
 
+#if(!$cixsOperation.hasChannel() && $cixsStructures.size() > 1)
+    /**
+     * Host data is composed of multiple structures, each with its own binding
+     * transformers.
+     */
+    private static final List<AbstractTransformers> TRANSFORMERS_LIST = new LinkedList<AbstractTransformers>();
+    static {
+#foreach($cixsStructure in $cixsStructures)
+      TRANSFORMERS_LIST.add(new ${cixsStructure.jaxbType}Transformers());
+#end
+    }
+#end
     /**
      * Constructs the transformer. Source is a $type object and result
      * will be a byte array.
      */
     public ${transformerType}() {
-#if($holder)
+#if($cixsOperation.hasChannel())
         super(new HashMap < String, AbstractTransformers >());
 #foreach($cixsStructure in $cixsStructures)
         getBindingTransformersMap().put("${cixsStructure.cicsContainer}", new ${cixsStructure.jaxbType}Transformers());
 #end
 #else
+#if($cixsStructures.size() > 1)
+        super(TRANSFORMERS_LIST, new MultiStructJavaGetter() {
+    
+          public Object get(Object holder, int index) {
+            switch (index) {
 #foreach($cixsStructure in $cixsStructures)
-        super(new ${cixsStructure.jaxbType}Transformers());
+#set($index=$velocityCount - 1 )
+            case $index:
+              return ((${type}) holder).get${cixsStructure.jaxbType}();
+#end
+            default:
+              throw new IllegalArgumentException(
+                  "No inner object in holder class for index "
+                      + index);
+            }
+          }
+    
+        });
+#else
+        super(new ${cixsStructures.get(0).jaxbType}Transformers());
 #end
 #end
         registerSourceType(new SimpleDataType<Object>(${type}.class));
     }
 
-#if($holder)
+#if($cixsOperation.hasChannel())
     /** {@inheritDoc} */
     public Object getObjectFromHolder(
             final Object holderObject,

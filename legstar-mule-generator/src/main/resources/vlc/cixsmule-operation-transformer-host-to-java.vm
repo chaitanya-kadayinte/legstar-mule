@@ -7,11 +7,17 @@
 #set($transformerType = "HostTo${holderType}MuleTransformer")
 import org.mule.transformer.types.DataTypeFactory;
 import org.mule.transport.legstar.transformer.AbstractHostToJavaMuleTransformer;
-#if($holder)
+#if($cixsOperation.hasChannel())
 import java.util.HashMap;
 import java.util.Map;
 import com.legstar.coxb.transform.AbstractTransformers;
 import org.mule.api.transformer.TransformerException;
+#else
+#if($cixsStructures.size() > 1)
+import java.util.LinkedList;
+import java.util.List;
+import com.legstar.coxb.transform.AbstractTransformers;
+#end
 #end
 #foreach($cixsStructure in $cixsStructures)
 #set($javaClassName = ${cixsHelper.getJavaClassName(${cixsStructure.jaxbPackageName}, ${cixsStructure.jaxbType})})
@@ -32,25 +38,59 @@ import ${helper.getQualClassName(${cixsStructure.coxbPackageName}, ${cixsStructu
  */
 public class ${transformerType} extends AbstractHostToJavaMuleTransformer {
 
+#if(!$cixsOperation.hasChannel() && $cixsStructures.size() > 1)
+    /**
+     * Host data is composed of multiple structures, each with its own binding
+     * transformers.
+     */
+    private static final List<AbstractTransformers> TRANSFORMERS_LIST = new LinkedList<AbstractTransformers>();
+    static {
+#foreach($cixsStructure in $cixsStructures)
+      TRANSFORMERS_LIST.add(new ${cixsStructure.jaxbType}Transformers());
+#end
+    }
+#end
     /**
      * Constructs the transformer. Source is a byte array and result will be
      * a $type object.
      */
     public ${transformerType}() {
-#if($holder)
+#if($cixsOperation.hasChannel())
         super(new HashMap < String, AbstractTransformers >());
 #foreach($cixsStructure in $cixsStructures)
         getBindingTransformersMap().put("${cixsStructure.cicsContainer}", new ${cixsStructure.jaxbType}Transformers());
 #end
 #else
+#if($cixsStructures.size() > 1)
+        super(
+            TRANSFORMERS_LIST,
+            new AbstractHostToJavaMuleTransformer.MultiStructJavaSetter() {
+    
+              ${type} reply = new ${type}();
+    
+              public Object getJavaResult() {
+                return reply;
+              }
+    
+              public void set(Object object, int index) {
+                switch (index) {
 #foreach($cixsStructure in $cixsStructures)
-        super(new ${cixsStructure.jaxbType}Transformers());
+#set($index=$velocityCount - 1 )
+                case $index:
+                  reply.set${cixsStructure.jaxbType}((${cixsStructure.jaxbType}) object);
+                  break;
+#end
+                }
+              }
+            });
+#else
+        super(new ${cixsStructures.get(0).jaxbType}Transformers());
 #end
 #end
         setReturnDataType(DataTypeFactory.create(${type}.class));
     }
 
-#if($holder)
+#if($cixsOperation.hasChannel())
     /** {@inheritDoc} */
     public Object createHolder(
             final Map < String, Object > transformedParts) throws TransformerException {

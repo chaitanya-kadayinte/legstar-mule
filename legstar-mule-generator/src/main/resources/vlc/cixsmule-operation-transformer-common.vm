@@ -17,7 +17,7 @@
 #set($holderType = ${cixsOperation.responseHolderType})
 #set($cixsStructures = ${cixsOperation.getOutput()})
 #end
-#if ($cixsOperation.hasChannel())
+#if ($cixsStructures.size() > 1)
 #set($type = $holderType)
 #set($holder = true)
 #else

@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.mule.transport.legstar.gen;
 
+import org.apache.commons.lang.StringUtils;
 import org.mule.transport.legstar.model.CixsMuleComponent;
 
+import com.legstar.cixs.gen.model.CixsOperation;
+import com.legstar.cixs.gen.model.CixsStructure;
 import com.legstar.test.cixs.JvmqueryOperationCases;
 import com.legstar.test.cixs.LsfileacOperationCases;
 import com.legstar.test.cixs.LsfileaeOperationCases;
@@ -101,5 +104,46 @@ public final class Samples {
                 JvmqueryOperationCases.getOperation(muleComponent.getName(),
                         muleComponent.getPackageName()));
         return muleComponent;
+    }
+
+    /**
+     * @return a Mule component with one operation an multiple inputs/outputs.
+     */
+    public static CixsMuleComponent getMultiStructMuleComponent() {
+        CixsMuleComponent muleComponent = getNewService("multistruct");
+        muleComponent.getCixsOperations().add(
+                getMultiStructOperation(muleComponent.getName(),
+                        muleComponent.getPackageName()));
+        return muleComponent;
+    }
+
+    /**
+     * @param serviceName the service name
+     * @param operationPackageName the operation classes package name
+     * @return an operation corresponding to a Web Service operation.
+     */
+    private static CixsOperation getMultiStructOperation(
+            final String serviceName, final String operationPackageName) {
+        CixsOperation cixsOperation = new CixsOperation();
+        cixsOperation.setName(serviceName);
+        cixsOperation.setCicsProgramName(StringUtils.upperCase(StringUtils
+                .substring(serviceName, 0, 8)));
+        cixsOperation.setPackageName(operationPackageName);
+
+        CixsStructure recor1Struc = new CixsStructure();
+        recor1Struc.setJaxbType("Record1");
+        recor1Struc.setJaxbPackageName("org.mule.transport.legstar.test.jaxb");
+        recor1Struc.setCoxbPackageName("org.mule.transport.legstar.test.coxb");
+        CixsStructure record2Struc = new CixsStructure();
+        record2Struc.setJaxbType("Record2");
+        record2Struc.setJaxbPackageName("org.mule.transport.legstar.test.jaxb");
+        record2Struc.setCoxbPackageName("org.mule.transport.legstar.test.coxb");
+
+        cixsOperation.addInput(recor1Struc);
+        cixsOperation.addInput(record2Struc);
+        cixsOperation.addOutput(recor1Struc);
+        cixsOperation.addOutput(record2Struc);
+
+        return cixsOperation;
     }
 }

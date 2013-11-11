@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.mule.transport.legstar.transformer;
 
+import java.util.List;
 import java.util.Map;
 
 import com.legstar.coxb.transform.AbstractTransformers;
@@ -34,15 +35,24 @@ public abstract class AbstractHostJavaMuleTransformer extends AbstractHostMuleTr
      * Each binding transformers set is identified by a unique name.
      */
     private final Map < String, AbstractTransformers > mBindingTransformersMap;
-    
+
+    /**
+     * Multi-structures transformers are associated with a list of binding
+     * transformers which are responsible to marshaling/unmarshaling the data
+     * payload.
+     */
+    private final List < AbstractTransformers > mBindingTransformersList;
+
     /**
      * Constructor for single part transformers.
+     * 
      * @param bindingTransformers a set of transformers for the part type.
      */
     public AbstractHostJavaMuleTransformer(
             final AbstractTransformers bindingTransformers) {
         mBindingTransformers = bindingTransformers;
         mBindingTransformersMap = null;
+        mBindingTransformersList = null;
     }
     
     /**
@@ -53,8 +63,22 @@ public abstract class AbstractHostJavaMuleTransformer extends AbstractHostMuleTr
             final Map < String, AbstractTransformers > bindingTransformersMap) {
         mBindingTransformers = null;
         mBindingTransformersMap = bindingTransformersMap;
+        mBindingTransformersList = null;
     }
-    
+
+    /**
+     * Constructor for multi-structures transformers.
+     * 
+     * @param bindingTransformersList list of transformers, to be applied in
+     *            sequence.
+     */
+    public AbstractHostJavaMuleTransformer(
+            final List < AbstractTransformers > bindingTransformersList) {
+        mBindingTransformers = null;
+        mBindingTransformersMap = null;
+        mBindingTransformersList = bindingTransformersList;
+    }
+
     /**
      * @return the transformers set to use for java to host transformations
      */
@@ -69,4 +93,10 @@ public abstract class AbstractHostJavaMuleTransformer extends AbstractHostMuleTr
         return mBindingTransformersMap;
     }
 
+    /**
+     * @return the list of transformers for java to host transformations
+     */
+    public List < AbstractTransformers > getBindingTransformersList() {
+        return mBindingTransformersList;
+    }
 }

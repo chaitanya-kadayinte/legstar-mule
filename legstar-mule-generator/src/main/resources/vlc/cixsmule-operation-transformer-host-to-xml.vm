@@ -8,7 +8,7 @@
 #set($holderNamespace = ${cixsOperation.responseHolderNamespace})
 import com.legstar.coxb.transform.HostTransformException;
 import org.mule.transport.legstar.transformer.AbstractHostToXmlMuleTransformer;
-#if($holder)
+#if($cixsOperation.hasChannel())
 import java.util.HashMap;
 import javax.xml.namespace.QName;
 import com.legstar.coxb.transform.AbstractXmlTransformers;
@@ -35,19 +35,21 @@ public class ${transformerType} extends AbstractHostToXmlMuleTransformer {
      * @throws HostTransformException if transformer cannot be created
      */
     public ${transformerType}() throws HostTransformException {
-#if($holder)
+#if($cixsOperation.hasChannel())
         super(new HashMap < String, AbstractXmlTransformers >());
 #foreach($cixsStructure in $cixsStructures)
         getXmlBindingTransformersMap().put("${cixsStructure.cicsContainer}", new ${cixsStructure.jaxbType}XmlTransformers());
 #end
 #else
-#foreach($cixsStructure in $cixsStructures)
-        super(new ${cixsStructure.jaxbType}XmlTransformers());
+#if($cixsStructures.size() > 1)
+        super(new ${holderType}XmlTransformers());
+#else
+        super(new ${cixsStructures.get(0).jaxbType}XmlTransformers());
 #end
 #end
     }
 
-#if($holder)
+#if($cixsOperation.hasChannel())
     /** {@inheritDoc} */
     public QName getHolderQName() throws TransformerException {
         return new QName("${holderNamespace}",
