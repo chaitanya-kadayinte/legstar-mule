@@ -12,12 +12,12 @@ package org.mule.transport.legstar.transformer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mule.transport.legstar.LegstarConnector;
-import org.mule.transport.legstar.i18n.LegstarMessages;
-import org.mule.transformer.AbstractMessageTransformer;
-import org.mule.util.ClassUtils;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractMessageTransformer;
+import org.mule.transport.legstar.LegstarConnector;
+import org.mule.transport.legstar.i18n.LegstarMessages;
+import org.mule.util.ClassUtils;
 
 import com.legstar.coxb.host.HostContext;
 
@@ -106,6 +106,41 @@ public abstract class AbstractHostMuleTransformer extends AbstractMessageTransfo
      */
     public LegstarMessages getI18NMessages() {
         return mI18NMessages;
+    }
+
+    /**
+     * Implemented by specialized classes this describes the holder and how to
+     * set its inner objects.
+     * 
+     */
+    public interface HolderSetter {
+
+        public void set(Object object, int index);
+
+        public Object getHolder();
+
+        public Class < ? > getHolderType();
+
+    }
+
+    /**
+     * Implemented by specialized classes. Provides a way to get inner objects
+     * from a Holder.
+     * 
+     */
+    public interface HolderGetter {
+
+        /**
+         * Get an inner object from a holder
+         * 
+         * @param object the holder object
+         * @param index the index identifying the inner object
+         * @return the inner object in the holder at the specified index
+         */
+        public Object get(Object object, int index);
+
+        public Class < ? > getHolderType();
+
     }
 
 }

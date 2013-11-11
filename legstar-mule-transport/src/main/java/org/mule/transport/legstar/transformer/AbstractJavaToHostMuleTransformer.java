@@ -33,7 +33,7 @@ public abstract class AbstractJavaToHostMuleTransformer extends
      * a specialized class that knows how to get objects from a holder (a bag of
      * objects)
      */
-    private MultiStructJavaGetter multiStructJavaGetter;
+    private HolderGetter holderGetter;
 
     /**
      * Constructor for single part transformers.
@@ -75,15 +75,14 @@ public abstract class AbstractJavaToHostMuleTransformer extends
      * 
      * @param bindingTransformersList ordered list of transformers to be applied
      *            in sequence.
-     * @param multiStructJavaGetter a specialized class that handles individual
-     *            transformations
+     * @param holderGetter Provides a way to get inner objects from a Holder
      */
     public AbstractJavaToHostMuleTransformer(
             final List < AbstractTransformers > bindingTransformersList,
-            MultiStructJavaGetter multiStructJavaGetter) {
+            HolderGetter holderGetter) {
         super(bindingTransformersList);
         setReturnDataType(DataTypeFactory.BYTE_ARRAY);
-        this.multiStructJavaGetter = multiStructJavaGetter;
+        this.holderGetter = holderGetter;
     }
 
     /**
@@ -113,17 +112,16 @@ public abstract class AbstractJavaToHostMuleTransformer extends
                         .size()][];
                 for (AbstractTransformers xf : getBindingTransformersList()) {
                     hostBytesArray[index] = xf.toHost(
-                            multiStructJavaGetter.get(holder, index),
-                            hostCharset);
+                            holderGetter.get(holder, index), hostCharset);
                     hostDataSize += hostBytesArray[index].length;
                     index++;
                 }
                 /* Merge individual byte arrays to form the request */
                 byte[] hostData = new byte[hostDataSize];
                 int requestBytePos = 0;
-                for (int i = 0; i < hostBytesArray.length ; i++) {
-                    System.arraycopy(hostBytesArray[i], 0, hostData, requestBytePos,
-                            hostBytesArray[i].length);
+                for (int i = 0; i < hostBytesArray.length; i++) {
+                    System.arraycopy(hostBytesArray[i], 0, hostData,
+                            requestBytePos, hostBytesArray[i].length);
                     requestBytePos += hostBytesArray[i].length;
                 }
                 return hostData;
@@ -145,19 +143,6 @@ public abstract class AbstractJavaToHostMuleTransformer extends
             throw new TransformerException(getI18NMessages()
                     .hostTransformFailure(), this, e);
         }
-
-    }
-
-    public interface MultiStructJavaGetter {
-
-        /**
-         * Get an inner object from a holder
-         * 
-         * @param object the holder object
-         * @param index the index identifying the inner object
-         * @return the inner object in the holder at the specified index
-         */
-        public Object get(Object object, int index);
 
     }
 

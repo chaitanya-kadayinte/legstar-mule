@@ -87,6 +87,25 @@ public class TransformersTemplatesTest extends AbstractTestTemplate {
     }
 
     /**
+     * Case MultiStruct.
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testMultiStructXmlToHostMuleTransformer() throws Exception {
+
+        CixsMuleComponent muleComponent = Samples.getMultiStructMuleComponent();
+        CixsOperation operation = muleComponent.getCixsOperations().get(0);
+        File transformersDir = getTransformersDir(muleComponent);
+        CodeGenUtil.checkDirectory(transformersDir, true);
+        AbstractCixsMuleGenerator.generateXmlToHostTransformer(operation,
+                getParameters(), transformersDir,
+                operation.getRequestHolderType(), "Request");
+        compare(transformersDir, operation.getRequestHolderType()
+                + "XmlToHostMuleTransformer.java", muleComponent.getName());
+
+    }
+
+    /**
      * Case JVMQuery.
      * 
      * @throws Exception if something goes wrong
@@ -279,6 +298,26 @@ public class TransformersTemplatesTest extends AbstractTestTemplate {
                 "Request");
         compare(transformersDir, "HostTo" + operation.getRequestHolderType()
                 + "MuleTransformer.java", muleComponent.getName());
+    }
+
+    /**
+     * Case Host to MultiStruct XML.
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testHostToMultiStructXmlMuleTransformer() throws Exception {
+
+        CixsMuleComponent muleComponent = Samples.getMultiStructMuleComponent();
+        CixsOperation operation = muleComponent.getCixsOperations().get(0);
+        File transformersDir = getTransformersDir(muleComponent);
+        operation
+                .setNamespace(Jaxws2CixsGenerator.DEFAULT_WSDL_TARGET_NAMESPACE_PREFIX
+                        + '/' + muleComponent.getName());
+        AbstractCixsMuleGenerator.generateHostToXmlTransformer(operation,
+                getParameters(), transformersDir, "MultiStructRequestHolder",
+                "Request");
+        compare(transformersDir, "HostTo" + operation.getRequestHolderType()
+                + "XmlMuleTransformer.java", muleComponent.getName());
     }
 
     /**

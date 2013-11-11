@@ -40,7 +40,7 @@ public abstract class AbstractHostToJavaMuleTransformer extends
      * a specialized class that knows how to assign objects to a holder (a bag
      * of objects)
      */
-    private MultiStructJavaSetter multiStructJavaSetter;
+    private HolderSetter holderSetter;
 
     /**
      * Constructor for single part transformers.
@@ -82,16 +82,15 @@ public abstract class AbstractHostToJavaMuleTransformer extends
      * 
      * @param bindingTransformersList ordered list of transformers to be applied
      *            in sequence.
-     * @param multiStructJavaSetter a specialized class that handles individual
-     *            transformations
+     * @param describes the holder and how to set its inner objects
      */
     public AbstractHostToJavaMuleTransformer(
             final List < AbstractTransformers > bindingTransformersList,
-            MultiStructJavaSetter multiStructJavaSetter) {
+            HolderSetter holderSetter) {
         super(bindingTransformersList);
         registerSourceType(DataTypeFactory.create(InputStream.class));
         registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        this.multiStructJavaSetter = multiStructJavaSetter;
+        this.holderSetter = holderSetter;
     }
 
     /**
@@ -195,20 +194,13 @@ public abstract class AbstractHostToJavaMuleTransformer extends
         int index = 0;
         HostTransformStatus status = new HostTransformStatus();
         for (AbstractTransformers xf : transformers) {
-            multiStructJavaSetter.set(
+            holderSetter.set(
                     xf.toJava(hostBytes, replyBytePos, hostCharset, status),
                     index);
             replyBytePos += status.getHostBytesProcessed();
             index++;
         }
-        return multiStructJavaSetter.getJavaResult();
-    }
-
-    public interface MultiStructJavaSetter {
-
-        public void set(Object object, int index);
-
-        public Object getJavaResult();
+        return holderSetter.getHolder();
     }
 
     /**

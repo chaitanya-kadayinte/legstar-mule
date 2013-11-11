@@ -62,27 +62,28 @@ public class ${transformerType} extends AbstractHostToJavaMuleTransformer {
 #end
 #else
 #if($cixsStructures.size() > 1)
-        super(
-            TRANSFORMERS_LIST,
-            new AbstractHostToJavaMuleTransformer.MultiStructJavaSetter() {
+        super(TRANSFORMERS_LIST, new HolderSetter() {
     
-              ${type} reply = new ${type}();
-    
-              public Object getJavaResult() {
-                return reply;
-              }
-    
-              public void set(Object object, int index) {
+            ${type} holder = new ${type}();
+  
+            public Object getHolder() {
+                return holder;
+            }
+  
+            public void set(Object object, int index) {
                 switch (index) {
 #foreach($cixsStructure in $cixsStructures)
 #set($index=$velocityCount - 1 )
                 case $index:
-                  reply.set${cixsStructure.jaxbType}((${cixsStructure.jaxbType}) object);
-                  break;
+                    holder.set${cixsStructure.jaxbType}((${cixsStructure.jaxbType}) object);
+                    break;
 #end
                 }
-              }
-            });
+            }
+            public Class<?> getHolderType() {
+                return ${type}.class;
+            }
+        });
 #else
         super(new ${cixsStructures.get(0).jaxbType}Transformers());
 #end

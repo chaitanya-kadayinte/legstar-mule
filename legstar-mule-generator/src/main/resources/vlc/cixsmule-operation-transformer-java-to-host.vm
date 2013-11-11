@@ -62,21 +62,25 @@ public class ${transformerType} extends AbstractJavaToHostMuleTransformer {
 #end
 #else
 #if($cixsStructures.size() > 1)
-        super(TRANSFORMERS_LIST, new MultiStructJavaGetter() {
+        super(TRANSFORMERS_LIST, new HolderGetter() {
     
-          public Object get(Object holder, int index) {
-            switch (index) {
+            public Object get(Object holder, int index) {
+                switch (index) {
 #foreach($cixsStructure in $cixsStructures)
 #set($index=$velocityCount - 1 )
-            case $index:
-              return ((${type}) holder).get${cixsStructure.jaxbType}();
+                case $index:
+                  return ((${type}) holder).get${cixsStructure.jaxbType}();
 #end
-            default:
-              throw new IllegalArgumentException(
-                  "No inner object in holder class for index "
-                      + index);
+                default:
+                  throw new IllegalArgumentException(
+                      "No inner object in holder class for index "
+                          + index);
+                }
             }
-          }
+
+            public Class<?> getHolderType() {
+                return ${type}.class;
+            }
     
         });
 #else
