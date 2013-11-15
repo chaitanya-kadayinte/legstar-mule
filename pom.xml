@@ -4,7 +4,7 @@
     <groupId>org.mule.transports</groupId>
     <artifactId>mule-transport-legstar-pom</artifactId>
     <packaging>pom</packaging>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.4.0</version>
 
     <name>LegStar for Mule</name>
     <description>Mainframe transport for Mule based on open-source LegStar</description>
@@ -32,9 +32,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://legstar-mule.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://legstar-mule.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://legstar-mule.googlecode.com/svn/trunk/</url>
+        <connection>scm:svn:http://legstar-mule.googlecode.com/svn/tags/mule-transport-legstar-pom-3.4.0</connection>
+        <developerConnection>scm:svn:https://legstar-mule.googlecode.com/svn/tags/mule-transport-legstar-pom-3.4.0</developerConnection>
+        <url>http://legstar-mule.googlecode.com/svn/tags/mule-transport-legstar-pom-3.4.0</url>
     </scm>
 
     <distributionManagement>
