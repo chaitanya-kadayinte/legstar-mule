@@ -120,7 +120,8 @@ public abstract class AbstractXmlToHostMuleTransformer extends
         setReturnDataType(DataTypeFactory.BYTE_ARRAY);
         this.holderGetter = holderGetter;
         try {
-            mJaxbContext = JAXBContext.newInstance(holderGetter.getClass());
+            mJaxbContext = JAXBContext
+                    .newInstance(holderGetter.getHolderType());
             mXmlUnmarshaller = mJaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Unable to create JAXB context",
