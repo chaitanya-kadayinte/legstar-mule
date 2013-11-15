@@ -41,14 +41,14 @@
 
         <downloadUrl>http://www.legsem.com/legstar/maven/repo/</downloadUrl>
         <repository>
-            <id>git-release-repository</id>
+            <id>ftp-release-repository</id>
             <name>LEGSTAR Distributions Repository</name>
-            <url>https://github.com/legsem/legstar/raw/master/maven/releases</url>
+            <url>ftp://ftp.legsem.com/www/legstar/maven/repo</url>
         </repository>
         <snapshotRepository>
-            <id>git-snapshots-repository</id>
+            <id>ftp-snapshots-repository</id>
             <name>LEGSTAR Distributions Snapshot Repository</name>
-            <url>https://github.com/legsem/legstar/raw/master/maven/snapshots</url>
+            <url>ftp://ftp.legsem.com/www/legstar/maven/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <site>
